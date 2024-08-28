@@ -101,6 +101,7 @@ public class PriceManager {
             if (i >= windowSize) {
                 if (currentSum / windowSize < lowestAvg) {
                     lowestAvg = currentSum / windowSize;
+                    startIndex = i - windowSize;
                 }
                 currentSum -= prices.get(i - windowSize).price();
             }
