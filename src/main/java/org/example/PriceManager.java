@@ -56,7 +56,7 @@ public class PriceManager {
             try {
                 int price = scanner.nextInt();
                 prices.add(new PricePerHour(hour, price));
-            } catch (NumberFormatException e) {
+            } catch (InputMismatchException e) {
                 System.out.println("Ogiltigt pris");
                 scanner.nextLine();
                 i--;
