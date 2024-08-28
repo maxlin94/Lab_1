@@ -30,7 +30,8 @@ public class PriceManager {
         }
     }
 
-    static void writePricesToFile() {
+    static void writePricesToFile() throws IOException {
+        Files.createDirectories(Paths.get("src/main/resources"));
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(FILE_PATH))) {
             for (PricePerHour price : prices) {
                 writer.write(price.hours() + ", " + price.price());

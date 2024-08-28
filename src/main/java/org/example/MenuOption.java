@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 enum MenuOption {
@@ -9,7 +10,11 @@ enum MenuOption {
     BEST_TIME('4', PriceManager::slidingAvgPrice),
     EXIT('e', () -> {
         System.out.println("Avslutar");
-        PriceManager.writePricesToFile();
+        try {
+            PriceManager.writePricesToFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         System.exit(0);
     });
 
