@@ -3,7 +3,6 @@ package org.example;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -16,7 +15,7 @@ public class PriceManager {
             Scanner scanner = new Scanner(new File(FILE_PATH));
             while (scanner.hasNext()) {
                 String line = scanner.nextLine();
-                String[] tokens = line.split(", ");
+                String[] tokens = line.split(",");
                 String hour = tokens[0];
                 try {
                     int price = Integer.parseInt(tokens[1]);
@@ -25,8 +24,9 @@ public class PriceManager {
                     System.out.println("Ogiltigt pris: " + tokens[1]);
                 }
             }
+            System.out.println("Priser inläst från " + FILE_PATH);
         } catch (FileNotFoundException e) {
-            System.out.println((e.getMessage()));
+            System.out.println("Fel när priser skulle laddas: " + (e.getMessage()));
         }
     }
 
@@ -34,10 +34,10 @@ public class PriceManager {
         Files.createDirectories(Paths.get("src/main/resources"));
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(FILE_PATH))) {
             for (PricePerHour price : prices) {
-                writer.write(price.hours() + ", " + price.price());
+                writer.write(price.hours() + "," + price.price());
                 writer.newLine();
             }
-            System.out.println("Priser sparade till fil");
+            System.out.println("Priser sparade till " + FILE_PATH);
         } catch (IOException e) {
             System.out.println("Fel när priser skulle sparas: " + e.getMessage());
         }
@@ -62,6 +62,11 @@ public class PriceManager {
                 i--;
             }
         }
+        try {
+            writePricesToFile();
+        } catch (IOException e) {
+            System.out.printf("Fel när priser skulle sparas: " + e.getMessage());
+        }
     }
 
     static void sortPrices() {
@@ -82,10 +87,9 @@ public class PriceManager {
             return;
         }
         IntSummaryStatistics stats = prices.stream().mapToInt(PricePerHour::price).summaryStatistics();
-        DecimalFormat df = new DecimalFormat("#.##");
         System.out.println("Min: " + stats.getMin() + " öre");
         System.out.println("Max: " + stats.getMax() + " öre");
-        System.out.println("Snitt: " + df.format(stats.getAverage()) + " öre");
+        System.out.printf("Snitt: %.2f öre\n", stats.getAverage());
     }
 
     static void slidingAvgPrice() {
@@ -108,6 +112,7 @@ public class PriceManager {
             currentSum += prices.get(i).price();
         }
         String startTime = prices.get(startIndex).hours().split("-")[0];
+        System.out.println("Bästa pris under 4 sammanhängande timmar");
         System.out.println("Börja ladda klockan " + startTime + ":00");
         System.out.println("Snittpris: " + lowestAvg + " öre");
     }
